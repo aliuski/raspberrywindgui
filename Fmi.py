@@ -6,9 +6,10 @@ from Measurement import Measurement
 
 class Fmi(Measurement):
 
- def __init__(self, place, color, fmisid):
+ def __init__(self, place, color, fmisid, isobservations):
   Measurement.__init__(self, place, color)
   self.fmisid = fmisid
+  self.isobservations = isobservations
 
  def parametrit(self, itemlist):
   itemlist2 = itemlist.getElementsByTagName('omso:PointTimeSeriesObservation')
@@ -24,7 +25,14 @@ class Fmi(Measurement):
   td = timedelta(hours=3)
   gmdstarttime = starttime - td
   gmdendtime = endtime - td
-  xmldoc = minidom.parse(urllib2.urlopen('http://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid='+self.fmisid+'&starttime='+gmdstarttime.strftime('%Y-%m-%dT%H:%M:%SZ')+'&endtime='+gmdendtime.strftime('%Y-%m-%dT%H:%M:%SZ')+'&parameters=windspeedms,WindDirection'))
+  
+  opendatatype = ''
+  if self.isobservations :
+   opendatatype = 'observations::weather::timevaluepair&fmisid='
+  else:
+   opendatatype = 'forecast::hirlam::surface::point::timevaluepair&place='
+  xmldoc = minidom.parse(urllib2.urlopen('http://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=fmi::'+opendatatype+self.fmisid+'&starttime='+gmdstarttime.strftime('%Y-%m-%dT%H:%M:%SZ')+'&endtime='+gmdendtime.strftime('%Y-%m-%dT%H:%M:%SZ')+'&parameters=windspeedms,WindDirection'))
+    
   itemlist = xmldoc.getElementsByTagName('wfs:member')
   itemlist5 = self.parametrit(itemlist[1])
 
