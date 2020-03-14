@@ -34,7 +34,7 @@ fmilist = [
 Fmi('Harmaja','r','100996',True),
 Fmi('Kumpula','c','101004',True),
 Fmi('Vuosaari','g','151028',True),
-Extdev('Laru','b')];
+Extdev('Laru','b','47','')];
 
 forecast = Fmi('Ennuste','k','Harmaja',False)
 
